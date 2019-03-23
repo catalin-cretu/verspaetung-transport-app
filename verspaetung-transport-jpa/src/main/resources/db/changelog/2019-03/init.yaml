@@ -51,23 +51,22 @@ databaseChangeLog:
             tableName: times
             columns:
               - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: times_pk
+              - column:
                   name: line_id
                   type: bigint
                   constraints:
                     nullable: false
-                    references: lines(line_id)
-                    foreignKeyName: times_lines_fk
               - column:
                   name: stop_id
                   type: bigint
                   constraints:
                     nullable: false
-                    references: stops(stop_id)
-                    foreignKeyName: times_stops_fk
               - column:
                   name: time
                   type: time
-        - addPrimaryKey:
-            columnNames: line_id, stop_id
-            constraintName: times_pk
-            tableName: times

@@ -7,14 +7,12 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.util.List;
+import java.time.LocalTime;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -23,22 +21,19 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "lines")
-public class LineEntity {
+@Table(name = "times")
+public class StopTimeEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "line_id")
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "line_name")
-    private String name;
+    @Column(name = "time")
+    private LocalTime time;
 
     @OneToOne
-    @JoinColumn(name = "line_name", insertable = false, updatable = false)
-    private DelayEntity delay;
+    @JoinColumn(name = "stop_id")
+    private StopEntity stop;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "line_id", insertable = false, updatable = false)
-    private List<StopTimeEntity> stopTimes;
 }

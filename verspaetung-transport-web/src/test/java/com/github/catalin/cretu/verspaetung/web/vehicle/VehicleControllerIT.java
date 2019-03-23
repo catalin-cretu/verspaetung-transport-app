@@ -11,7 +11,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Set;
+import java.time.LocalTime;
+import java.util.List;
 
 import static com.github.catalin.cretu.verspaetung.web.Paths.Params;
 import static com.github.catalin.cretu.verspaetung.web.Paths.api;
@@ -38,7 +39,7 @@ class VehicleControllerIT {
         @DisplayName("Returns multiple vehicles")
         void returnsAll() throws Exception {
             when(vehicleService.findAllVehicles())
-                    .thenReturn(Set.of(
+                    .thenReturn(List.of(
                             Populated.vehicle().id(1L).build(),
                             Populated.vehicle().id(2L).build()));
 
@@ -53,13 +54,20 @@ class VehicleControllerIT {
         @DisplayName("Returns vehicles with details")
         void vehicleDetails() throws Exception {
             when(vehicleService.findAllVehicles())
-                    .thenReturn(Set.of(
+                    .thenReturn(List.of(
                             Populated.vehicle()
                                     .id(24L)
                                     .line(Populated.line()
                                             .id(55L)
                                             .name("SOS")
                                             .delay(5)
+                                            .stops(List.of(
+                                                    Populated.stop()
+                                                            .id(18L)
+                                                            .time(LocalTime.of(12, 34, 56))
+                                                            .xCoordinate(1)
+                                                            .yCoordinate(10)
+                                                            .build()))
                                             .build())
                                     .build()));
 
@@ -71,7 +79,12 @@ class VehicleControllerIT {
                     .andExpect(jsonPath("$.vehicles.[0].id").value(24))
                     .andExpect(jsonPath("$.vehicles.[0].line.id").value(55))
                     .andExpect(jsonPath("$.vehicles.[0].line.name").value("SOS"))
-                    .andExpect(jsonPath("$.vehicles.[0].line.delay").value(5));
+                    .andExpect(jsonPath("$.vehicles.[0].line.delay").value(5))
+                    .andExpect(jsonPath("$.vehicles.[0].line.stops", hasSize(1)))
+                    .andExpect(jsonPath("$.vehicles.[0].line.stops.[0].id").value(18))
+                    .andExpect(jsonPath("$.vehicles.[0].line.stops.[0].time").value("12:34:56"))
+                    .andExpect(jsonPath("$.vehicles.[0].line.stops.[0].coordinates.x").value(1))
+                    .andExpect(jsonPath("$.vehicles.[0].line.stops.[0].coordinates.y").value(10));
         }
     }
 
@@ -84,7 +97,7 @@ class VehicleControllerIT {
         void returnsByLineName() throws Exception {
             when(vehicleService.findByLineName("S44"))
                     .thenReturn(Result.ok(
-                            Set.of(Populated.vehicle()
+                            List.of(Populated.vehicle()
                                     .line(Populated.line()
                                             .name("S44")
                                             .build())
@@ -110,6 +123,33 @@ class VehicleControllerIT {
                     .andExpect(jsonPath("$.errors.[0].code").value("name"))
                     .andExpect(jsonPath("$.errors.[0].message").value("must not be blank"))
                     .andExpect(jsonPath("$.vehicles").isEmpty());
+        }
+    }
+
+    @Nested
+    @DisplayName("GET  " + api.Vehicles + " ?" + Params.nextAtStop)
+    class NextArrivingByStopId {
+
+        @Test
+        @DisplayName("Returns next vehicle arriving at stop")
+        void nextByStopId() throws Exception {
+            when(vehicleService.findNextAtStop(213L))
+                    .thenReturn(Result.ok(
+                            List.of(Populated.vehicle()
+                                    .line(Populated.line()
+                                            .name("nextOne")
+                                            .stops(List.of(Populated.stop()
+                                                    .id(213L)
+                                                    .build()))
+                                            .build())
+                                    .build())));
+
+            mockMvc.perform(
+                    get(api.Vehicles).param(Params.nextAtStop, "213"))
+
+                    .andExpect(jsonPath("$.errors").isEmpty())
+                    .andExpect(jsonPath("$.vehicles", hasSize(1)))
+                    .andExpect(jsonPath("$.vehicles.[0].line.name").value("nextOne"));
         }
     }
 }

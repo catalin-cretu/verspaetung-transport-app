@@ -1,10 +1,17 @@
 package com.github.catalin.cretu.verspaetung.web;
 
 import com.github.catalin.cretu.verspaetung.api.vehicle.Line;
+import com.github.catalin.cretu.verspaetung.api.vehicle.Stop;
 import com.github.catalin.cretu.verspaetung.api.vehicle.Vehicle;
+import com.github.catalin.cretu.verspaetung.jpa.DelayEntity;
 import com.github.catalin.cretu.verspaetung.jpa.LineEntity;
+import com.github.catalin.cretu.verspaetung.jpa.StopEntity;
+import com.github.catalin.cretu.verspaetung.jpa.StopTimeEntity;
 import com.github.catalin.cretu.verspaetung.jpa.VehicleEntity;
 import lombok.experimental.UtilityClass;
+
+import java.time.LocalTime;
+import java.util.List;
 
 @UtilityClass
 public class Populated {
@@ -18,7 +25,17 @@ public class Populated {
     public static Line.LineBuilder line() {
         return Line.builder()
                 .id(2L)
-                .name("M4");
+                .name("M4")
+                .delay(1)
+                .stops(List.of(Populated.stop().build()));
+    }
+
+    public static Stop.StopBuilder stop() {
+        return Stop.builder()
+                .id(56L)
+                .time(LocalTime.of(10, 10, 10))
+                .xCoordinate(1)
+                .yCoordinate(1);
     }
 
     public static VehicleEntity.VehicleEntityBuilder vehicleEntity() {
@@ -30,6 +47,27 @@ public class Populated {
     public static LineEntity.LineEntityBuilder lineEntity() {
         return LineEntity.builder()
                 .id(2L)
+                .name("m4")
+                .delay(delay().build())
+                .stopTimes(List.of(Populated.stopTimeEntity().build()));
+    }
+
+    public static DelayEntity.DelayEntityBuilder delay() {
+        return DelayEntity.builder()
+                .delay(22)
                 .name("m4");
+    }
+
+    public static StopTimeEntity.StopTimeEntityBuilder stopTimeEntity() {
+        return StopTimeEntity.builder()
+                .time(LocalTime.of(10, 10, 10))
+                .stop(stopEntity().build());
+    }
+
+    public static StopEntity.StopEntityBuilder stopEntity() {
+        return StopEntity.builder()
+                .id(3L)
+                .xCoordinate(1)
+                .yCoordinate(2);
     }
 }

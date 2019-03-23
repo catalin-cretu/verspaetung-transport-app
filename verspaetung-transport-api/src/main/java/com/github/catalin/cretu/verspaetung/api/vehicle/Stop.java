@@ -3,15 +3,14 @@ package com.github.catalin.cretu.verspaetung.api.vehicle;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
+import java.time.LocalTime;
 
 @Data
 @Builder
-public class Line {
+public class Stop {
 
     private Long id;
-    private String name;
-    private Integer delay;
-
-    private List<Stop> stops;
+    private LocalTime time;
+    private Integer xCoordinate;
+    private Integer yCoordinate;
 }

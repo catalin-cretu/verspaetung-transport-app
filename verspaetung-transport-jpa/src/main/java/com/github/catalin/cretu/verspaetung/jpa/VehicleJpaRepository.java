@@ -10,4 +10,5 @@ public interface VehicleJpaRepository extends JpaRepository<VehicleEntity, Long>
     //no-op
 
     Optional<VehicleEntity> findByLineName(final String lineName);
+
 }

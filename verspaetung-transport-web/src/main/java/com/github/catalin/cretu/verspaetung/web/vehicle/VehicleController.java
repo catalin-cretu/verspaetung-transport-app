@@ -2,6 +2,7 @@ package com.github.catalin.cretu.verspaetung.web.vehicle;
 
 import com.github.catalin.cretu.verspaetung.ErrorResult;
 import com.github.catalin.cretu.verspaetung.Result;
+import com.github.catalin.cretu.verspaetung.api.vehicle.Stop;
 import com.github.catalin.cretu.verspaetung.api.vehicle.Vehicle;
 import com.github.catalin.cretu.verspaetung.api.vehicle.VehicleService;
 import com.github.catalin.cretu.verspaetung.web.ApiResponse;
@@ -56,16 +57,32 @@ public class VehicleController {
                 .build();
     }
 
-    private Result<Set<Vehicle>> findVehicles(final Map<String, String> allParams) {
+    private Result<List<Vehicle>> findVehicles(final Map<String, String> allParams) {
         if (allParams.containsKey(Params.lineName)) {
             var lineName = allParams.get(Params.lineName);
 
             return vehicleService.findByLineName(lineName);
+        } else if (allParams.containsKey(Params.nextAtStop)) {
+            var stopId = allParams.get(Params.nextAtStop);
+
+            if (isNotNumeric(stopId)) {
+                return Result.error(Params.nextAtStop, "Parameter must be a numeric stop ID");
+            }
+            return vehicleService.findNextAtStop(Long.valueOf(stopId));
         }
         return Result.ok(vehicleService.findAllVehicles());
     }
 
-    private static Set<VehicleView> toVehicleViews(final Set<Vehicle> vehicles) {
+    private static boolean isNotNumeric(final String stopIdParam) {
+        try {
+            Long.valueOf(stopIdParam);
+            return false;
+        } catch (NumberFormatException e) {
+            return true;
+        }
+    }
+
+    private static Set<VehicleView> toVehicleViews(final List<Vehicle> vehicles) {
         return vehicles.stream()
                 .map(VehicleController::toVehicleView)
                 .collect(toSet());
@@ -80,7 +97,18 @@ public class VehicleController {
                         .id(line.getId())
                         .name(line.getName())
                         .delay(line.getDelay())
+                        .stops(toStopViews(line.getStops()))
                         .build())
                 .build();
+    }
+
+    private static List<StopView> toStopViews(final List<Stop> stops) {
+        return stops.stream()
+                .map(stop -> StopView.builder()
+                        .id(stop.getId())
+                        .time(stop.getTime())
+                        .coordinates(new CoordinatesView(stop.getXCoordinate(), stop.getYCoordinate()))
+                        .build())
+                .collect(toList());
     }
 }

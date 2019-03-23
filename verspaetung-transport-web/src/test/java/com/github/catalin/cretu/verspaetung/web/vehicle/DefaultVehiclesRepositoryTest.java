@@ -2,8 +2,8 @@ package com.github.catalin.cretu.verspaetung.web.vehicle;
 
 
 import com.github.catalin.cretu.verspaetung.api.vehicle.Line;
+import com.github.catalin.cretu.verspaetung.api.vehicle.Stop;
 import com.github.catalin.cretu.verspaetung.api.vehicle.Vehicle;
-import com.github.catalin.cretu.verspaetung.jpa.DelayEntity;
 import com.github.catalin.cretu.verspaetung.jpa.LineEntity;
 import com.github.catalin.cretu.verspaetung.jpa.VehicleJpaRepository;
 import com.github.catalin.cretu.verspaetung.web.Populated;
@@ -11,9 +11,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,10 +59,18 @@ class DefaultVehiclesRepositoryTest {
                                 .line(LineEntity.builder()
                                         .id(10L)
                                         .name("SPA")
-                                        .delay(DelayEntity.builder()
+                                        .delay(Populated.delay()
                                                 .name("SPA")
                                                 .delay(3)
                                                 .build())
+                                        .stopTimes(List.of(Populated.stopTimeEntity()
+                                                .time(LocalTime.of(14, 0, 4))
+                                                .stop(Populated.stopEntity()
+                                                        .id(988L)
+                                                        .xCoordinate(55)
+                                                        .yCoordinate(1)
+                                                        .build())
+                                                .build()))
                                         .build())
                                 .build()));
 
@@ -78,5 +88,9 @@ class DefaultVehiclesRepositoryTest {
         assertThat(vehicle3.getLine())
                 .extracting(Line::getId, Line::getName, Line::getDelay)
                 .containsSequence(10L, "SPA", 3);
+
+        assertThat(vehicle3.getLine().getStops())
+                .extracting(Stop::getId, Stop::getTime, Stop::getXCoordinate, Stop::getYCoordinate)
+                .containsSequence(tuple(988L, LocalTime.of(14, 0, 4), 55, 1));
     }
 }

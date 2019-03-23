@@ -1,19 +1,19 @@
 package com.github.catalin.cretu.verspaetung.api.vehicle;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public class InMemoryVehicleRepository implements VehicleRepository {
 
-    private Set<Vehicle> vehicles;
+    private List<Vehicle> vehicles;
     private long id = 0;
 
-    public InMemoryVehicleRepository(final Set<Vehicle> vehicles) {
+    public InMemoryVehicleRepository(final List<Vehicle> vehicles) {
         this.vehicles = vehicles;
     }
 
     @Override
-    public Set<Vehicle> findAll() {
+    public List<Vehicle> findAll() {
         return vehicles;
     }
 
@@ -21,4 +21,5 @@ public class InMemoryVehicleRepository implements VehicleRepository {
     public Optional<Vehicle> findByLineName(final String name) {
         return Optional.empty();
     }
+
 }

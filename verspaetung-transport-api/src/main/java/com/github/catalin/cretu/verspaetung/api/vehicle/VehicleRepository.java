@@ -1,11 +1,12 @@
 package com.github.catalin.cretu.verspaetung.api.vehicle;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public interface VehicleRepository {
 
-    Set<Vehicle> findAll();
+    List<Vehicle> findAll();
 
     Optional<Vehicle> findByLineName(final String name);
+
 }
