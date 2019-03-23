@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 03 - create vehicles
+      author: verspaetung-transport
+      changes:
+        - createTable:
+            tableName: vehicles
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: vehicles_pk
+              - column:
+                  name: line_id
+                  type: bigint
+                  constraints:
+                    references: lines(line_id)
+                    foreignKeyName: vehicles_lines_fk
+        - createIndex:
+            columns:
+              - column:
+                  name: line_id
+            indexName: line_id_idx
+            tableName: vehicles

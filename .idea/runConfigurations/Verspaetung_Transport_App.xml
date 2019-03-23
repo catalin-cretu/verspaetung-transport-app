@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Verspaetung Transport App" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="com.github.catalin.cretu.verspaetung.App" />
+    <option name="MAIN_CLASS_NAME" value="com.github.catalin.cretu.app.verspaetung.App" />
     <module name="verspaetung-transport-web" />
     <method v="2">
       <option name="Make" enabled="true" />

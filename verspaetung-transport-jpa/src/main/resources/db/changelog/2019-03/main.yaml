@@ -5,3 +5,6 @@ databaseChangeLog:
   - include:
       file: load-sample-data.yaml
       relativeToChangelogFile: true
+  - include:
+      file: add-vehicles.yaml
+      relativeToChangelogFile: true
