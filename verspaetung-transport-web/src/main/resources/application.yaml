@@ -1,0 +1,31 @@
+server:
+  port: 8081
+
+spring:
+  main:
+    banner-mode: "off"
+  application:
+    name: verspaetung-transport-app
+  display-name: verspaetung-transport-app
+
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    url: jdbc:h2:./data/app;AUTO_SERVER=true
+    username: user
+    password: pass
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+
+  compression:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info

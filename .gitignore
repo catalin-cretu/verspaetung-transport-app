@@ -1,0 +1,26 @@
+# Log file
+*.log
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# idea
+*.iml
+
+# Maven
+target/
+
+# IntelliJ IDEA
+/.idea/workspace.xml
+/.idea/modules.xml
+/.idea/encodings.xml
+/.idea/dbnavigator.xml
+/.idea/compiler.xml
+/.idea/sonarlint/
+/.idea/libraries/
+/.idea/dictionaries/
+
+# src
+*.db
+/web/data/
+/data/

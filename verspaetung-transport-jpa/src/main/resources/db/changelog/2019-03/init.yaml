@@ -1,0 +1,6 @@
+databaseChangeLog:
+  - changeSet:
+      id: init
+      author: verspaetung-transport
+      changes:
+        comment: initial script
