@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 02 - load sample data
+      author: verspaetung-transport
+      changes:
+        - loadData:
+            file: data/delays.csv
+            relativeToChangelogFile: true
+            quotchar:
+            tableName: delays
+        - loadData:
+            file: data/lines.csv
+            relativeToChangelogFile: true
+            tableName: lines
+        - loadData:
+            file: data/stops.csv
+            relativeToChangelogFile: true
+            tableName: stops
+        - loadData:
+            file: data/times.csv
+            relativeToChangelogFile: true
+            tableName: times
+            columns:
+              - column:
+                  name: line_id
+              - column:
+                  name: stop_id
+              - column:
+                  name: time
+                  type: time
+

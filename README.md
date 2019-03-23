@@ -15,8 +15,12 @@ related to a fictional city called `Verspaetung`.
 - jUnit 5
 
 
-#### Building The Project
-`$ ./mvnw clean verify`
+#### Commands
+- build project
+    - `$ ./mvnw clean verify`
+- run app
+    - `$ ./mvnw clean package -D skipTests -P run`
+    - main class: `com.github.catalin.cretu.verspaetung.App`
 
 
 ## Features
@@ -40,6 +44,10 @@ related to a fictional city called `Verspaetung`.
     - http://localhost:8081/actuator/info
 - H2 database console
     - http://localhost:8081/h2-console
+	- driver: `org.h2.Driver`
+	- url: `jdbc:h2:<full root path>/verspaetung-transport-app/data/app`
+	- user: `user`
+	- password: `pass`
 - all vehicles             
 	- http://localhost:8081/api/vehicles
 - vehicle by line name
