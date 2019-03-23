@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -19,14 +20,18 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "vehicles")
-public class VehicleEntity {
+@Table(name = "lines")
+public class LineEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "line_id")
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "line_id")
-    private LineEntity line;
+    @Column(name = "line_name")
+    private String name;
+
+    @OneToOne()
+    @JoinColumn(name = "line_name", insertable = false, updatable = false)
+    private DelayEntity delay;
 }

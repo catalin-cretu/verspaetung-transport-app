@@ -7,5 +7,10 @@ public interface Paths {
 
     interface api {
         String Vehicles = Api + "/vehicles";
+
+    }
+
+    interface Params {
+        String lineName = "lineName";
     }
 }

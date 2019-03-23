@@ -5,8 +5,9 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Vehicle {
+public class Line {
 
     private Long id;
-    private Line line;
+    private String name;
+    private Integer delay;
 }

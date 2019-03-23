@@ -1,6 +1,5 @@
 package com.github.catalin.cretu.verspaetung;
 
-import com.github.catalin.cretu.verspaetung.Result;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

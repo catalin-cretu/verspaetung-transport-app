@@ -1,5 +1,6 @@
 package com.github.catalin.cretu.verspaetung.web.vehicle;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-class VehicleView {
+public class LineView {
 
     private Long id;
-    private LineView line;
+    private String name;
+    private Integer delay;
 }

@@ -51,7 +51,7 @@ related to a fictional city called `Verspaetung`.
 - all vehicles             
 	- http://localhost:8081/api/vehicles
 - vehicle by line name
-	- http://localhost:8081/api/vehicles?lineName=(lineName)
+	- http://localhost:8081/api/vehicles?lineName=M4
 - vehicle by arrival time & stop coordinates
 	- http://localhost:8081/api/vehicles?time=(time)&stopX=(xCoord)&stopY=(yCoord)
 	- time format: `HHmmss`
