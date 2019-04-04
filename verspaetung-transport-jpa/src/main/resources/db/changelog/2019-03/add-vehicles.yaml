@@ -29,17 +29,26 @@ databaseChangeLog:
             tableName: vehicles
             columns:
               - column:
+                  name: id
+                  value: 1000
+              - column:
                   name: line_id
                   value: 0
         - insert:
             tableName: vehicles
             columns:
               - column:
+                  name: id
+                  value: 1111
+              - column:
                   name: line_id
                   value: 1
         - insert:
             tableName: vehicles
             columns:
+              - column:
+                  name: id
+                  value: 2222
               - column:
                   name: line_id
                   value: 2

@@ -26,7 +26,7 @@ related to a fictional city called `Verspaetung`.
 ## Features
 - find a vehicle by line name
 - find the next arriving vehicle by stop ID
-- `TODO:` find a vehicle by time and coordinates TODO
+- `TODO:` find a vehicle by time and coordinates
 - vehicle details
     - ID 
 	- line
@@ -48,7 +48,7 @@ related to a fictional city called `Verspaetung`.
 	- url: `jdbc:h2:<full root path>/verspaetung-transport-app/data/app`
 	- user: `user`
 	- password: `pass`
-- all vehicles             
+- all vehicles
 	- http://localhost:8081/api/vehicles
 - vehicle by line name
 	- http://localhost:8081/api/vehicles?lineName=M4

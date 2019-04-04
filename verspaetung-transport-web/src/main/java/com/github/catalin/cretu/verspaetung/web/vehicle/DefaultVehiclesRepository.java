@@ -4,13 +4,14 @@ import com.github.catalin.cretu.verspaetung.api.vehicle.Line;
 import com.github.catalin.cretu.verspaetung.api.vehicle.Stop;
 import com.github.catalin.cretu.verspaetung.api.vehicle.Vehicle;
 import com.github.catalin.cretu.verspaetung.api.vehicle.VehicleRepository;
+import com.github.catalin.cretu.verspaetung.jpa.NextVehicleProjection;
 import com.github.catalin.cretu.verspaetung.jpa.StopTimeEntity;
 import com.github.catalin.cretu.verspaetung.jpa.VehicleEntity;
 import com.github.catalin.cretu.verspaetung.jpa.VehicleJpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 public class DefaultVehiclesRepository implements VehicleRepository {
@@ -30,9 +31,11 @@ public class DefaultVehiclesRepository implements VehicleRepository {
     }
 
     @Override
-    public Optional<Vehicle> findByLineName(final String name) {
+    public List<Vehicle> findByLineName(final String name) {
         return vehicleJpaRepository.findByLineName(name)
-                .map(DefaultVehiclesRepository::toVehicle);
+                .stream()
+                .map(DefaultVehiclesRepository::toVehicle)
+                .collect(toList());
     }
 
     private static Vehicle toVehicle(final VehicleEntity vehicleEntity) {
@@ -59,5 +62,40 @@ public class DefaultVehiclesRepository implements VehicleRepository {
                         .yCoordinate(stopTimeEntity.getStop().getYCoordinate())
                         .build())
                 .collect(toList());
+    }
+
+    @Override
+    public boolean stopIdExists(final Long stopId) {
+        return vehicleJpaRepository.existsByLineStopTimesStopId(stopId);
+    }
+
+    @Override
+    public List<Vehicle> findNextArrivingAtStop(final Long stopId) {
+        var nextVehicleProjections = vehicleJpaRepository.findNextAtStop(stopId);
+
+        return nextVehicleProjections.stream()
+                .sorted(DefaultVehiclesRepository::compareDelayedTime)
+                .map(DefaultVehiclesRepository::convertProjectionToVehicle)
+                .collect(toList());
+    }
+
+    private static int compareDelayedTime(
+            final NextVehicleProjection first,
+            final NextVehicleProjection second) {
+        var firstDelayedTime = first.getTime().plusMinutes(first.getDelay());
+        var secondDelayedTime = second.getTime().plusMinutes(second.getDelay());
+
+        return firstDelayedTime.compareTo(secondDelayedTime);
+    }
+
+    private static Vehicle convertProjectionToVehicle(final NextVehicleProjection vehicleProjection) {
+        return Vehicle.builder()
+                .id(vehicleProjection.getVehicleId())
+                .line(Line.builder()
+                        .id(vehicleProjection.getLineId())
+                        .name(vehicleProjection.getLineName())
+                        .stops(emptyList())
+                        .build())
+                .build();
     }
 }

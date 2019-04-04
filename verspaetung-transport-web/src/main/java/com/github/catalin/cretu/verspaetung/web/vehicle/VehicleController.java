@@ -19,7 +19,6 @@ import java.util.Set;
 import static com.github.catalin.cretu.verspaetung.web.Paths.Params;
 import static com.github.catalin.cretu.verspaetung.web.Paths.api;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 @Slf4j
 @RestController
@@ -82,10 +81,10 @@ public class VehicleController {
         }
     }
 
-    private static Set<VehicleView> toVehicleViews(final List<Vehicle> vehicles) {
+    private static List<VehicleView> toVehicleViews(final List<Vehicle> vehicles) {
         return vehicles.stream()
                 .map(VehicleController::toVehicleView)
-                .collect(toSet());
+                .collect(toList());
     }
 
     private static VehicleView toVehicleView(final Vehicle vehicle) {

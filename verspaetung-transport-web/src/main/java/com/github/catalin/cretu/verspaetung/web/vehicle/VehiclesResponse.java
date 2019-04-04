@@ -9,10 +9,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Set;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNullElse;
 
 @Data
@@ -21,12 +19,12 @@ import static java.util.Objects.requireNonNullElse;
 @EqualsAndHashCode(callSuper = true)
 class VehiclesResponse extends ErrorsResponse {
 
-    private Set<VehicleView> vehicles;
+    private List<VehicleView> vehicles;
 
     @Builder
-    public VehiclesResponse(final Set<VehicleView> vehicles, final List<ErrorView> errors) {
+    public VehiclesResponse(final List<VehicleView> vehicles, final List<ErrorView> errors) {
         super(requireNonNullElse(errors, emptyList()));
 
-        this.vehicles = requireNonNullElse(vehicles, emptySet());
+        this.vehicles = requireNonNullElse(vehicles, emptyList());
     }
 }

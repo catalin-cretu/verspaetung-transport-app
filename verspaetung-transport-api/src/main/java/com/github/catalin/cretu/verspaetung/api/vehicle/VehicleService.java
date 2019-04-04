@@ -6,9 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalTime;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
-
 @Slf4j
 public class VehicleService {
 
@@ -30,40 +27,18 @@ public class VehicleService {
         }
         log.info("Find vehicles with line with name [{}]", name);
 
-        var optionalVehicle = vehicleRepository.findByLineName(name);
-        return optionalVehicle
-                .map(vehicle -> Result.ok(List.of(vehicle)))
-                .orElse(Result.ok(List.of()));
+        var vehicles = vehicleRepository.findByLineName(name);
+        return Result.ok(vehicles);
     }
 
     public Result<List<Vehicle>> findNextAtStop(final Long stopId) {
+        if (!vehicleRepository.stopIdExists(stopId)) {
+            return Result.error("stopId", "Cannot find stop with ID: " + stopId);
+        }
         log.info("Find vehicles arriving next at stop with id [{}]", stopId);
 
-        List<Vehicle> vehicles = vehicleRepository.findAll();
-        var vehiclesStopping = vehicles.stream()
-                .filter(vehicle -> hasStop(stopId, vehicle))
-                .collect(toList());
-
-        if (vehiclesStopping.isEmpty()) {
-            return Result.ok(List.of());
-        }
-        var normalStopTime = vehiclesStopping.get(0).getLine().getStops()
-                .stream()
-                .filter(stop -> stop.getId().equals(stopId))
-                .map(Stop::getTime)
-                .findFirst()
-                .orElseThrow();
-
-        var vehicleByDelayedTime = vehiclesStopping.stream()
-                .collect(toMap(
-                        vehicle -> toDelayedLocalTime(normalStopTime, vehicle),
-                        vehicle -> vehicle));
-        var nextArrivingVehicle =
-                vehicleByDelayedTime.keySet().stream()
-                        .min(LocalTime::compareTo)
-                        .map(vehicleByDelayedTime::get)
-                        .orElseThrow();
-        return Result.ok(List.of(nextArrivingVehicle));
+        var vehicles = vehicleRepository.findNextArrivingAtStop(stopId);
+        return Result.ok(vehicles);
     }
 
     private static LocalTime toDelayedLocalTime(final LocalTime normalStopTime, final Vehicle vehicle) {

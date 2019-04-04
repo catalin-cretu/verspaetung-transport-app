@@ -1,13 +1,11 @@
 package com.github.catalin.cretu.verspaetung.web;
 
-import com.github.catalin.cretu.verspaetung.api.vehicle.Line;
-import com.github.catalin.cretu.verspaetung.api.vehicle.Stop;
-import com.github.catalin.cretu.verspaetung.api.vehicle.Vehicle;
 import com.github.catalin.cretu.verspaetung.jpa.DelayEntity;
 import com.github.catalin.cretu.verspaetung.jpa.LineEntity;
 import com.github.catalin.cretu.verspaetung.jpa.StopEntity;
 import com.github.catalin.cretu.verspaetung.jpa.StopTimeEntity;
 import com.github.catalin.cretu.verspaetung.jpa.VehicleEntity;
+import com.github.catalin.cretu.verspaetung.web.vehicle.NextVehicleProjection;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalTime;
@@ -15,28 +13,6 @@ import java.util.List;
 
 @UtilityClass
 public class Populated {
-
-    public Vehicle.VehicleBuilder vehicle() {
-        return Vehicle.builder()
-                .id(1L)
-                .line(line().build());
-    }
-
-    public static Line.LineBuilder line() {
-        return Line.builder()
-                .id(2L)
-                .name("M4")
-                .delay(1)
-                .stops(List.of(Populated.stop().build()));
-    }
-
-    public static Stop.StopBuilder stop() {
-        return Stop.builder()
-                .id(56L)
-                .time(LocalTime.of(10, 10, 10))
-                .xCoordinate(1)
-                .yCoordinate(1);
-    }
 
     public static VehicleEntity.VehicleEntityBuilder vehicleEntity() {
         return VehicleEntity.builder()
@@ -69,5 +45,14 @@ public class Populated {
                 .id(3L)
                 .xCoordinate(1)
                 .yCoordinate(2);
+    }
+
+    public static NextVehicleProjection.NextVehicleProjectionBuilder nextVehicle() {
+        return NextVehicleProjection.builder()
+                .vehicleId(45L)
+                .lineId(11L)
+                .lineName("T1")
+                .delay(2)
+                .time(LocalTime.of(10, 10, 10));
     }
 }

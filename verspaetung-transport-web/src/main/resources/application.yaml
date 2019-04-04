@@ -8,6 +8,9 @@ spring:
     name: verspaetung-transport-app
   display-name: verspaetung-transport-app
 
+  jackson:
+    default-property-inclusion: NON_NULL
+
   h2:
     console:
       enabled: true
