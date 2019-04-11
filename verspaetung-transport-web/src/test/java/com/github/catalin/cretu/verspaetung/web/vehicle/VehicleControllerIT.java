@@ -23,7 +23,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @WebMvcTest(controllers = VehicleController.class)
@@ -83,10 +82,12 @@ class VehicleControllerIT {
 
                     .andExpect(jsonPath("$.errors").isEmpty())
                     .andExpect(jsonPath("$.vehicles", hasSize(1)))
+
                     .andExpect(jsonPath("$.vehicles.[0].id").value(24))
                     .andExpect(jsonPath("$.vehicles.[0].line.id").value(55))
                     .andExpect(jsonPath("$.vehicles.[0].line.name").value("SOS"))
                     .andExpect(jsonPath("$.vehicles.[0].line.delay").value(5))
+
                     .andExpect(jsonPath("$.vehicles.[0].line.stops", hasSize(1)))
                     .andExpect(jsonPath("$.vehicles.[0].line.stops.[0].id").value(18))
                     .andExpect(jsonPath("$.vehicles.[0].line.stops.[0].time").value("12:34:56"))
@@ -160,9 +161,9 @@ class VehicleControllerIT {
             mockMvc.perform(
                     get(api.Vehicles).param(Params.nextAtStop, "213"))
 
-                    .andDo(print())
                     .andExpect(jsonPath("$.errors").isEmpty())
                     .andExpect(jsonPath("$.vehicles", hasSize(3)))
+
                     .andExpect(jsonPath("$.vehicles.[0].line.name").value("first"))
                     .andExpect(jsonPath("$.vehicles.[1].line.name").value("second"))
                     .andExpect(jsonPath("$.vehicles.[2].line.name").value("third"));
@@ -191,6 +192,64 @@ class VehicleControllerIT {
                     .andExpect(jsonPath("$.vehicles.[0].id").value(11))
                     .andExpect(jsonPath("$.vehicles.[0].line.id").value(22))
                     .andExpect(jsonPath("$.vehicles.[0].line.name").value("G3"));
+        }
+    }
+
+    @Nested
+    @DisplayName("GET  " + api.Vehicles + " ?" + Params.time + " &" + Params.stopX + " &" + Params.stopY)
+    class FindByStopTimeAndCoordinates {
+
+        @Test
+        @DisplayName("Returns vehicles with stop time and coordinates")
+        void vehicles() throws Exception {
+            when(vehicleJpaRepository.findByStop(any(), any(), any()))
+                    .thenReturn(List.of(
+                            Populated.vehicleEntity()
+                                    .line(Populated.lineEntity()
+                                            .stopTimes(List.of(
+                                                    Populated.stopTimeEntity()
+                                                            .time(LocalTime.of(10, 23))
+                                                            .stop(Populated.stopEntity()
+                                                                    .xCoordinate(2)
+                                                                    .yCoordinate(4)
+                                                                    .build())
+                                                            .build()))
+                                            .build())
+                                    .build()));
+
+            mockMvc.perform(
+                    get(api.Vehicles)
+                            .param(Params.time, "10:23")
+                            .param(Params.stopX, "2")
+                            .param(Params.stopY, "4"))
+
+                    .andExpect(jsonPath("$.errors").isEmpty())
+                    .andExpect(jsonPath("$.vehicles.[0].line.stops[0].time").value("10:23:00"))
+                    .andExpect(jsonPath("$.vehicles.[0].line.stops[0].coordinates.x").value(2))
+                    .andExpect(jsonPath("$.vehicles.[0].line.stops[0].coordinates.y").value(4));
+        }
+
+        @Test
+        @DisplayName("Invalid stop param types - Returns errors")
+        void stopParamTypes() throws Exception {
+            mockMvc.perform(
+                    get(api.Vehicles)
+                            .param(Params.time, "10:000")
+                            .param(Params.stopX, "a")
+                            .param(Params.stopY, "1b"))
+
+                    .andExpect(jsonPath("$.vehicles").isEmpty())
+                    .andExpect(jsonPath("$.errors", hasSize(3)))
+
+                    .andExpect(jsonPath("$.errors[0].code").value("time"))
+                    .andExpect(jsonPath("$.errors[0].message")
+                            .value("stop time parameter must be formatted as HH:mm:ss"))
+
+                    .andExpect(jsonPath("$.errors[1].code").value("stopX"))
+                    .andExpect(jsonPath("$.errors[1].message").value("stop X coordinate parameter must be an integer"))
+
+                    .andExpect(jsonPath("$.errors[2].code").value("stopY"))
+                    .andExpect(jsonPath("$.errors[2].message").value("stop Y coordinate parameter must be an integer"));
         }
     }
 }

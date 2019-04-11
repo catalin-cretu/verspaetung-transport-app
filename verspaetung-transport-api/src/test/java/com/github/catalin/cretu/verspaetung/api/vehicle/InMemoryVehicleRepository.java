@@ -68,6 +68,20 @@ public class InMemoryVehicleRepository implements VehicleRepository {
                 .collect(toList());
     }
 
+    @Override
+    public List<Vehicle> findByStop(
+            final LocalTime stopTime, final Integer stopXCoordinate, final Integer stopYCoordinate) {
+        return vehicles.stream()
+                .filter(vehicle -> vehicle.getLine().getStops()
+                        .stream()
+                        .anyMatch(stop -> stop.getTime().equals(stopTime)))
+                .filter(vehicle -> vehicle.getLine().getStops()
+                        .stream()
+                        .anyMatch(stop -> stop.getXCoordinate().equals(stopXCoordinate)
+                                && stop.getYCoordinate().equals(stopYCoordinate)))
+                .collect(toList());
+    }
+
     private static LocalTime toDelayedLocalTime(final LocalTime normalStopTime, final Vehicle vehicle) {
         return normalStopTime.plusMinutes(vehicle.getLine().getDelay());
     }

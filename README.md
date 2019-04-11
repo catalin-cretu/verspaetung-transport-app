@@ -26,7 +26,7 @@ related to a fictional city called `Verspaetung`.
 ## Features
 - find a vehicle by line name
 - find the next arriving vehicle by stop ID
-- `TODO:` find a vehicle by time and coordinates
+- find a vehicle by time and coordinates
 - vehicle details
     - ID 
 	- line
@@ -52,9 +52,9 @@ related to a fictional city called `Verspaetung`.
 	- http://localhost:8081/api/vehicles
 - vehicle by line name
 	- http://localhost:8081/api/vehicles?lineName=M4
-- `TODO:` vehicle by arrival time & stop coordinates
-	- http://localhost:8081/api/vehicles?time=(time)&stopX=(xCoord)&stopY=(yCoord)
-	- time format: `HHmmss`
+- vehicle by arrival time & stop coordinates
+	- http://localhost:8081/api/vehicles?time=10:08&stopX=2&stopY=9
+	- ISO time format: `HH:mm:ss`
 - next vehicle at stop by stop ID
 	- http://localhost:8081/api/vehicles?nextAtStop=3
 

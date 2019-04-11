@@ -1,8 +1,8 @@
 package com.github.catalin.cretu.verspaetung;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 public interface Result<T> {
 
@@ -10,7 +10,7 @@ public interface Result<T> {
         return new Error<>(code, message);
     }
 
-    static <T> Result<T> errors(final Set<ErrorResult> errors) {
+    static <T> Result<T> errors(final List<ErrorResult> errors) {
         return new Error<>(errors);
     }
 
@@ -22,7 +22,7 @@ public interface Result<T> {
      * @return errors for Error Result or
      * @throws NoSuchElementException for OK Result
      */
-    Set<ErrorResult> getErrors();
+    List<ErrorResult> getErrors();
 
     boolean hasErrors();
 
@@ -30,19 +30,19 @@ public interface Result<T> {
 
     class Error<T> implements Result<T> {
 
-        private final Set<ErrorResult> errors = new HashSet<>();
+        private final List<ErrorResult> errors = new ArrayList<>();
 
         private Error(final String code, final String message) {
             errors.add(new ErrorResult(code, message));
         }
 
-        private Error(final Set<ErrorResult> errs) {
+        private Error(final List<ErrorResult> errs) {
             errors.addAll(errs);
         }
 
 
         @Override
-        public Set<ErrorResult> getErrors() {
+        public List<ErrorResult> getErrors() {
             return errors;
         }
 
@@ -66,7 +66,7 @@ public interface Result<T> {
         }
 
         @Override
-        public Set<ErrorResult> getErrors() {
+        public List<ErrorResult> getErrors() {
             throw new NoSuchElementException("OK result does not have any errors");
         }
 

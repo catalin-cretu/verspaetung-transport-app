@@ -13,5 +13,9 @@ public interface Paths {
     interface Params {
         String lineName = "lineName";
         String nextAtStop = "nextAtStop";
+
+        String time = "time";
+        String stopX = "stopX";
+        String stopY = "stopY";
     }
 }

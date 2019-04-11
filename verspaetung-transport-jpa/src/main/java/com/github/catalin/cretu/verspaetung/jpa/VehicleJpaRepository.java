@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,4 +33,18 @@ public interface VehicleJpaRepository extends JpaRepository<VehicleEntity, Long>
             "  stopTimes.time," +
             "  lineDelay.delay")
     List<NextVehicleProjection> findNextAtStop(@Param("stopId") final Long stopId);
+
+    @Query("select vehicle " +
+            "from VehicleEntity vehicle " +
+            "join vehicle.line line " +
+            "join line.stopTimes stopTimes " +
+            "join stopTimes.stop stop " +
+            "where " +
+            "    stopTimes.time = :stopTime " +
+            "and stop.xCoordinate = :stopX " +
+            "and stop.yCoordinate = :stopY")
+    List<VehicleEntity> findByStop(
+            @Param("stopTime") final LocalTime stopTime,
+            @Param("stopX") final Integer stopX,
+            @Param("stopY") final Integer stopY);
 }

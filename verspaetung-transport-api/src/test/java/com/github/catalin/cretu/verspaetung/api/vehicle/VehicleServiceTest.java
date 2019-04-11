@@ -95,7 +95,6 @@ class VehicleServiceTest {
         }
     }
 
-
     @Nested
     @DisplayName("findNextAtStop")
     class FindNextAtStop {
@@ -170,6 +169,79 @@ class VehicleServiceTest {
                     .hasSize(2)
                     .extracting(Line::getName)
                     .containsSequence("line-3", "line-21");
+        }
+    }
+
+    @Nested
+    @DisplayName("findByStop")
+    class FindByStop {
+
+        @Test
+        @DisplayName("Missing time - Returns error result")
+        void blankTime() {
+            var vehicleService = Fixtures.vehicleService();
+
+            var errorResults = vehicleService.findByStop(null, 1, 2).getErrors();
+
+            assertThat(errorResults)
+                    .first()
+                    .extracting(ErrorResult::getCode, ErrorResult::getMessage)
+                    .containsSequence("time", "stop time must not be blank");
+        }
+
+        @Test
+        @DisplayName("Missing stop X coordinate - Returns error result")
+        void stopX() {
+            var vehicleService = Fixtures.vehicleService();
+
+            var errorResults = vehicleService.findByStop(LocalTime.now(), null, 2).getErrors();
+
+            assertThat(errorResults)
+                    .first()
+                    .extracting(ErrorResult::getCode, ErrorResult::getMessage)
+                    .containsSequence("stopX", "stop X coordinate must not be blank");
+        }
+
+        @Test
+        @DisplayName("Missing stop Y coordinate - Returns error result")
+        void stopY() {
+            var vehicleService = Fixtures.vehicleService();
+
+            var errorResults = vehicleService.findByStop(LocalTime.now(), 3, null).getErrors();
+
+            assertThat(errorResults)
+                    .first()
+                    .extracting(ErrorResult::getCode, ErrorResult::getMessage)
+                    .containsSequence("stopY", "stop Y coordinate must not be blank");
+        }
+
+        @Test
+        @DisplayName("Vehicles by stop - Returns vehicles result")
+        void vehicles() {
+            var stop = Populated.stop()
+                    .time(LocalTime.of(10, 0, 0))
+                    .xCoordinate(11)
+                    .yCoordinate(25)
+                    .build();
+            var vehicleService = Fixtures.vehicleService(
+                    Populated.vehicle(111L).build(),
+                    Populated.vehicle(1L).line(
+                            Populated.line()
+                                    .stops(List.of(stop))
+                                    .build())
+                            .build(),
+                    Populated.vehicle(2L).line(
+                            Populated.line()
+                                    .stops(List.of(stop))
+                                    .build())
+                            .build());
+
+            var vehicles = vehicleService.findByStop(LocalTime.of(10, 0, 0), 11, 25).get();
+
+            assertThat(vehicles)
+                    .extracting(Vehicle::getId)
+                    .hasSize(2)
+                    .containsSequence(1L, 2L);
         }
     }
 }

@@ -9,6 +9,7 @@ import com.github.catalin.cretu.verspaetung.jpa.StopTimeEntity;
 import com.github.catalin.cretu.verspaetung.jpa.VehicleEntity;
 import com.github.catalin.cretu.verspaetung.jpa.VehicleJpaRepository;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -76,6 +77,16 @@ public class DefaultVehiclesRepository implements VehicleRepository {
         return nextVehicleProjections.stream()
                 .sorted(DefaultVehiclesRepository::compareDelayedTime)
                 .map(DefaultVehiclesRepository::convertProjectionToVehicle)
+                .collect(toList());
+    }
+
+    @Override
+    public List<Vehicle> findByStop(
+            final LocalTime stopTime, final Integer stopXCoordinate, final Integer stopYCoordinate) {
+
+        return vehicleJpaRepository.findByStop(stopTime, stopXCoordinate, stopYCoordinate)
+                .stream()
+                .map(DefaultVehiclesRepository::toVehicle)
                 .collect(toList());
     }
 

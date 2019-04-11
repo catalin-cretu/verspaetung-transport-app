@@ -1,5 +1,6 @@
 package com.github.catalin.cretu.verspaetung.api.vehicle;
 
+import java.time.LocalTime;
 import java.util.List;
 
 public interface VehicleRepository {
@@ -11,4 +12,6 @@ public interface VehicleRepository {
     boolean stopIdExists(final Long stopId);
 
     List<Vehicle> findNextArrivingAtStop(final Long stopId);
+
+    List<Vehicle> findByStop(final LocalTime stopTime, final Integer stopXCoordinate, final Integer stopYCoordinate);
 }

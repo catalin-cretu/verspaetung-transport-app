@@ -135,6 +135,32 @@ class VehicleJpaRepositoryIT {
                 .isEqualTo(1);
     }
 
+    @Test
+    @DisplayName("findByStop - Returns vehicles ordered by stop time and delay")
+    void findByStop() {
+        var stopEntity = stopJpaRepository.saveAndFlush(StopEntity.builder()
+                .id(54578L)
+                .xCoordinate(44)
+                .yCoordinate(66)
+                .build());
+        var savedVehicleEntity = createVehicle(stopEntity, 0, "12:02:03");
+
+        List<VehicleEntity> vehicleEntities =
+                vehicleJpaRepository.findByStop(LocalTime.of(12, 2, 3), 44, 66);
+
+        var vehicleEntity = vehicleEntities.get(0);
+        assertThat(vehicleEntity.getId())
+                .isEqualTo(savedVehicleEntity.getId());
+
+        var stopTimeEntity = vehicleEntity.getLine().getStopTimes().get(0);
+        assertThat(stopTimeEntity.getTime())
+                .isEqualTo(LocalTime.of(12, 2, 3));
+
+        assertThat(stopTimeEntity.getStop())
+                .extracting(StopEntity::getXCoordinate, StopEntity::getYCoordinate)
+                .containsSequence(44, 66);
+    }
+
     @SafeVarargs
     private List<VehicleEntity> createVehicles(
             final Entry<Integer, String>... delayAndTimes) {

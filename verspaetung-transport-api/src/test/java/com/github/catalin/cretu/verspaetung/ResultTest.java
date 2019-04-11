@@ -3,8 +3,8 @@ package com.github.catalin.cretu.verspaetung;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import static java.math.BigDecimal.ONE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,7 +21,7 @@ class ResultTest {
                 .extracting(Result::hasErrors)
                 .isEqualTo(true);
 
-        Result<Object> errors = Result.errors(Set.of(
+        Result<Object> errors = Result.errors(List.of(
                 new ErrorResult("a", "e1"),
                 new ErrorResult("b", "e2")));
         assertThat(errors.getErrors())
